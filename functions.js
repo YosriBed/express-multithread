@@ -8,7 +8,7 @@ const fib = (n) => (
 );
 const longProcess = async () => {
   const results = [];
-  for (let i = 0; i < getRandomArbitrary(30, 50); i += 1) {
+  for (let i = 0; i < getRandomArbitrary(40, 45); i += 1) {
     const result = fib(i);
     results.push(result);
   }

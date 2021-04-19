@@ -2,8 +2,9 @@ const request = require('supertest');
 const httpStatus = require('http-status');
 const app = require('./app');
 
-jest.setTimeout(60000);
-const numberOfRequests = 10;
+jest.setTimeout(600000); // It can take a long time with multiple requests
+
+const numberOfRequests = 50; // Number of concurrent requests
 
 const median = (values) => {
   const mid = Math.floor(values.length / 2);
@@ -11,12 +12,8 @@ const median = (values) => {
   return values.length % 2 !== 0 ? nums[mid] : nums[mid - 1];
 };
 
-describe('Routes', () => {
+describe('PERF', () => {
   describe('GET /load/single', () => {
-    test('single request time', async () => {
-      await request(app)
-        .get('/single').expect(httpStatus.OK);
-    });
     test('multiple requests measure time', async () => {
       const promises = [];
       for (let i = 0; i < numberOfRequests; i += 1) {
@@ -27,19 +24,16 @@ describe('Routes', () => {
       }
       const values = await Promise.all(promises);
       console.log(`
-      **************SINGLE******************\n
-      ${numberOfRequests} requests took ${Math.round(values.reduce((prev, curr) => prev + curr))} ms.\n
-      Median: ${Math.round(median(values))}\n
-      Each request took on average ${Math.round(values.reduce((prev, curr) => prev + curr) / values.length)} ms.\n
-      **************************************`);
+      *************WORKER THREADS*************\n
+      ${numberOfRequests} Requests\n
+      Total time: ${Math.round(values.reduce((prev, curr) => prev + curr))} ms.\n
+      Median: ${Math.round(median(values))} ms.\n
+      Average ${Math.round(values.reduce((prev, curr) => prev + curr) / values.length)} ms.\n
+      **********************************`);
       expect(1).toEqual(1);
     });
   });
   describe('GET /load/multiple', () => {
-    test('single request time', async () => {
-      await request(app)
-        .get('/multiple').expect(httpStatus.OK);
-    });
     test('multiple requests measure time', async () => {
       const promises = [];
       for (let i = 0; i < numberOfRequests; i += 1) {
@@ -50,10 +44,11 @@ describe('Routes', () => {
       }
       const values = await Promise.all(promises);
       console.log(`
-      *************MULTIPLE*************\n
-      ${numberOfRequests} requests took ${Math.round(values.reduce((prev, curr) => prev + curr))} ms.\n
-      Median: ${Math.round(median(values))}\n
-      Each request took on average ${Math.round(values.reduce((prev, curr) => prev + curr) / values.length)} ms.\n
+      *************WORKER THREADS*************\n
+      ${numberOfRequests} Requests\n
+      Total time: ${Math.round(values.reduce((prev, curr) => prev + curr))} ms.\n
+      Median: ${Math.round(median(values))} ms.\n
+      Average ${Math.round(values.reduce((prev, curr) => prev + curr) / values.length)} ms.\n
       **********************************`);
       expect(1).toEqual(1);
     });
