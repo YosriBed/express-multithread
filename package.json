@@ -5,10 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon app.js",
-    "test": "jest -i --coverage",
-    "test:watch": "jest -i --watchAll",
-    "eslint": "node_modules/.bin/eslint .",
-    "eslint:fix": "node_modules/.bin/eslint . --fix"
+    "test": "jest -i --watchAll"
   },
   "keywords": [],
   "author": "",
